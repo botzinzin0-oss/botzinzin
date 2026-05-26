@@ -34,6 +34,7 @@ const client = new Client({
 
 const DATA_FILE = path.join(__dirname, "staff-stats.json");
 const TEMP_BANS_FILE = path.join(__dirname, "temp-bans.json");
+const RULES_IMAGE_PATH = path.join(__dirname, "zinzin.png");
 const BRAND_IMAGE_PATH = path.join(__dirname, config.branding?.imageFile || "zinzin.png");
 const spamMap = new Map();
 const joinRaidMap = new Map();
@@ -343,6 +344,11 @@ function makeEmbed(title, description) {
 function brandFiles() {
   if (!fs.existsSync(BRAND_IMAGE_PATH)) return [];
   return [new AttachmentBuilder(BRAND_IMAGE_PATH, { name: config.branding?.imageFile || "zinzin.png" })];
+}
+
+function rulesFiles() {
+  if (!fs.existsSync(RULES_IMAGE_PATH)) return [];
+  return [new AttachmentBuilder(RULES_IMAGE_PATH, { name: "zinzin.png" })];
 }
 
 function escapeHtml(text = "") {
@@ -1159,6 +1165,65 @@ client.on("interactionCreate", async interaction => {
   }
 });
 
+async function sendRulesPanel(channel) {
+  const files = rulesFiles();
+
+  const embed = new EmbedBuilder()
+    .setColor(0xff1f1f)
+    .setTitle("📜 RÈGLEMENT OFFICIEL : ZinZin x RUSH PvP")
+    .setDescription([
+      "## RÈGLES GÉNÉRALES & COMPORTEMENT",
+      "",
+      "**Esprit :** Respect, discipline et teamplay obligatoires. Pas de jeu perso (ego-play). On aide ses mates avant de penser au loot.",
+      "**Vocal :** Push to Talk obligatoire pour trash ou parler IG.",
+      "➤ Si tu débites malgré ça, tu seras ban direct, sans avertissement.",
+      "**Comportement :** Chambrage léger autorisé. Racisme, sexisme, homophobie, religion, harcèlement, scam, RMT et trash staff = **BAN PERMANENT**.",
+      "",
+      "## TENUES & ÉQUIPES",
+      "",
+      "**Tenues :** Tenue ZinZin complète et identique pour toute l'équipe (haut + bas) obligatoire, même en solo. Tenues et casques \"tank\" interdits.",
+      "**Équipes :** 6 joueurs max (Non-Officielle) | 20 joueurs max (Officielle). Alliances (team-up) interdites (**SANCTION : BLACKLIST**).",
+      "",
+      "## ZONES DE GUNFIGHT",
+      "",
+      "**Règle absolue :** Tirs et actions uniquement **À L'INTÉRIEUR** des zones. Jouer les bords ou tirer depuis/vers l'extérieur = **BAN**.",
+      "",
+      "🟥 **Zone Rouge :** Toutes les armes autorisées | Loot autorisé | Déplacement de corps interdit | Aucun PRESS en fin de zone.",
+      "🟦 **Zone Bleue :** Calibre .50 uniquement | Loot autorisé | Aucun PRESS en fin de zone.",
+      "⬜ **Zone Blanche :** Toutes les armes autorisées | **LOOT INTERDIT** | Aucun PRESS pendant et après la zone.",
+      "",
+      "## LOOT & RÉANIMATION",
+      "",
+      "**Priorité absolue :** On sécurise ➡️ On réanime (revive) les mates ➡️ Ensuite seulement on loot.",
+      "**Règles :** Uniquement celui qui a fait le kill peut loot, directement sur le corps au sol. Interdit de déplacer un corps (sur un capot, etc.).",
+      "**Objets autorisés :** Armes, silencieux, accessoires, argent illimité.",
+      "**Objets interdits :** Kevlars, bandages.",
+      "",
+      "## PRESS & COMBATS",
+      "",
+      "**PRESS :** 30 secondes max pour drop. Interdit de re-PRESS les mêmes joueurs avant 5 min. Interdit dans toutes les zones (Rouge, Bleue, Blanche, Verte) et en fin de zone. Pas de réanimation pendant un PRESS. Aucun retour après la mort.",
+      "**Wager :** Q-Pick, Right-Pick, Ghost-Pick, Monkey-Jump, Large-Pick (avant kill) et double/triple pick sont interdits. Lock obligatoire. Pas de push avant un kill.",
+      "**Interdictions en combat :** Déconnexion en fight ou pendant un PRESS = **BAN**. PIT abusif et blindé dans les bâtiments interdits. Spam ou usebug d'émotes interdits.",
+      "",
+      "## TRICHE & SANCTIONS",
+      "",
+      "**Triche (BAN PERMANENT) :** Cheat, aim assist / manette, macros, scripts, tir à travers les murs ou véhicules blindés, sous-map et bug revive.",
+      "**Sanctions appliquées :** Warn ➡️ Kick ➡️ Blacklist ➡️ Ban Temporaire ➡️ Ban Permanent. Les admins/modérateurs ont le dernier mot."
+    ].join("\n"))
+    .setFooter({
+      text: "By Owner RushPvP"
+    })
+    .setTimestamp();
+
+  if (files.length) {
+    embed.setThumbnail("attachment://content.png");
+  }
+
+  await channel.send({
+    embeds: [embed],
+    files
+  });
+}
 
 client.on("messageCreate", async message => {
   if (message.author.bot || !message.guild) return;
