@@ -1210,9 +1210,7 @@ async function sendRulesPanel(channel) {
       "**Triche (BAN PERMANENT) :** Cheat, aim assist / manette, macros, scripts, tir à travers les murs ou véhicules blindés, sous-map et bug revive.",
       "**Sanctions appliquées :** Warn ➡️ Kick ➡️ Blacklist ➡️ Ban Temporaire ➡️ Ban Permanent. Les admins/modérateurs ont le dernier mot."
     ].join("\n"))
-    .setFooter({
-      text: "By Owner RushPvP"
-    })
+    .setFooter})
     .setTimestamp();
 
   if (files.length) {
