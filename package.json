@@ -1,5 +1,5 @@
 {
-  "name": "zinzin-bot-ready",
+  "name": "zinzin-bot",
   "version": "2.1.0",
   "description": "Bot Discord Zinzin opérationnel - commandes !, tickets, sécurité, modération, giveaways et logs.",
   "main": "index.js",
