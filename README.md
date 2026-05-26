@@ -35,14 +35,14 @@ Bot Discord en commandes préfixées `!` uniquement.
 
 ## Salons configurés
 
-- Panel tickets : `1411179481850318928`
-- Transcripts tickets HTML : `1411192328231850034`
-- Logs kick : `1420474600172818595`
-- Logs ban/unban : `1420474736210608209`
-- Logs bantemp : `1420474764744589565`
-- Logs mutes/unmutes : `1420474857874919604`
-- Logs commandes : `1420474894092861490`
-- Logs sécurité : `1508839256226009160`
+- Panel tickets : 
+- Transcripts tickets HTML : 
+- Logs kick : 
+- Logs ban/unban : 
+- Logs bantemp : 
+- Logs mutes/unmutes : 
+- Logs commandes : 
+- Logs sécurité : 
 
 ## Installation Railway
 
