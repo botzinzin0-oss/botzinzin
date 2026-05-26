@@ -57,7 +57,7 @@ module.exports = {
   },
 
   giveaway: {
-    channelId: process.env.GIVEAWAY_CHANNEL_ID || "",
+    channelId: process.env.GIVEAWAY_CHANNEL_ID || "1431077575232458934",
 
     allowedRoles: [
       process.env.FONDATEUR_ROLE_NAME || "Fondateur",
