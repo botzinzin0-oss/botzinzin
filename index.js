@@ -558,10 +558,6 @@ async function sendTicketPanel(channel) {
     .setTimestamp();
 
   if (files.length) {
-    embed.setThumbnail(`attachment://${config.branding?.imageFile || "zinzin.png"}`);
-  }
-  
-  if (files.length) {
   embed.setImage(`attachment://${config.branding?.imageFile || "zinzin.png"}`);
   }
 
