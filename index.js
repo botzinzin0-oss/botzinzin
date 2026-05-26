@@ -40,6 +40,12 @@ const spamMap = new Map();
 const joinRaidMap = new Map();
 const ticketActivity = new Map();
 const giveaways = new Map();
+const STAFF_ROLE_IDS = [
+  "1411180786819928064",
+  "1443329749849210910",
+  "1421076564921024612",
+  "1411183312763879516"
+];
 
 function parseGiveawayDate(input) {
   const date = new Date(input);
@@ -228,9 +234,11 @@ function getStaffRolesArray() {
 }
 
 function getStaffRoleIdsArray() {
-  return Array.isArray(config.staffRoles?.ids)
+  const configIds = Array.isArray(config.staffRoles?.ids)
     ? config.staffRoles.ids.filter(Boolean)
     : [];
+
+  return [...new Set([...STAFF_ROLE_IDS, ...configIds])];
 }
 
 function hasPermissionRole(member) {
@@ -257,9 +265,11 @@ function canCreateGiveaway(member) {
     ? config.giveaway.allowedRoles.filter(Boolean)
     : [];
 
-  const allowedIds = Array.isArray(config.giveaway?.allowedRoleIds)
+  const configAllowedIds = Array.isArray(config.giveaway?.allowedRoleIds)
     ? config.giveaway.allowedRoleIds.filter(Boolean)
     : [];
+
+  const allowedIds = [...new Set([...STAFF_ROLE_IDS, ...configAllowedIds])];
 
   return member.roles.cache.some(role =>
     allowedIds.includes(role.id) || allowedNames.includes(role.name)
@@ -968,7 +978,9 @@ client.on("interactionCreate", async interaction => {
       }
 
       if (interaction.customId.startsWith("open_giveaway_modal_")) {
-        const ownerId = interaction.customId.replace("open_giveaway_modal_", "");
+        const parts = interaction.customId.replace("open_giveaway_modal_", "").split("_");
+        const ownerId = parts[0];
+        const giveawayId = parts[1];
 
         if (interaction.user.id !== ownerId) {
           return interaction.reply({ content: "❌ Ce bouton n’est pas pour toi.", ephemeral: true });
@@ -979,7 +991,7 @@ client.on("interactionCreate", async interaction => {
         }
 
         const modal = new ModalBuilder()
-          .setCustomId(`giveaway_create_${ownerId}`)
+          .setCustomId(`giveaway_create_${ownerId}_${giveawayId}`)
           .setTitle("Créer un giveaway");
 
         modal.addComponents(
@@ -1091,7 +1103,8 @@ client.on("interactionCreate", async interaction => {
       }
 
       const rolePing = interaction.guild.roles.cache.find(r => r.name === config.giveaway.pingRole);
-      const giveawayId = Date.now().toString();
+      const parts = interaction.customId.replace("giveaway_create_", "").split("_");
+      const giveawayId = parts[1] || Date.now().toString();
 
       const button = new ButtonBuilder()
         .setCustomId(`giveaway_join_${giveawayId}`)
