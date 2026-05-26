@@ -4,65 +4,56 @@ Bot Discord en commandes préfixées `!` uniquement.
 
 ## Commandes principales
 
-- `!help` / `!aide` : affiche l'aide
-- `!panel` / `!setup` : envoie le panel ticket
-- `!close` : ferme le ticket actuel
+- `!help` / `!aide`
+- `!panel` / `!setup` : envoie le panel ticket dans le salon configuré
+- `!close` : ferme le ticket actuel et envoie le transcript HTML
 - `!clear 10` : supprime des messages
-- `!add ID` : ajoute quelqu'un au ticket
-- `!staffstats` : affiche les stats staff
-- `!statut` : affiche le statut du bot
+- `!add ID` : ajoute quelqu’un au ticket
+- `!staffstats` : stats staff
+- `!statut` : statut du bot
 
 ## Modération
 
+- `!kick @membre raison`
 - `!ban @membre raison`
 - `!unban ID raison`
-- `!kick @membre raison`
 - `!mute @membre 10m raison`
 - `!unmute @membre raison`
 - `!bantemp @membre 7d raison`
 
-Durées acceptées : `s`, `m`, `h`, `d` ou `j`.
-Exemples : `10m`, `2h`, `7d`.
+## Giveaways
 
-## Giveaway
-
-- `!giveaway op` : ouvre le formulaire giveaway
-- `!cancelgiveaway ID` : annule un giveaway
+- `!giveaway op`
+- `!cancelgiveaway ID`
 
 ## Sécurité incluse
 
-Le fichier `config.js` contient déjà une partie sécurité :
-
 - anti-spam
-- blocage des liens d'invitation Discord
+- anti-liens d’invitation Discord
 - anti-mentions massives
-- détection anti-raid à l'arrivée de plusieurs membres
-- auto-close tickets configuré dans la config
+- détection anti-raid avec logs sécurité
 
-## Railway
+## Salons configurés
 
-Variables minimales :
+- Panel tickets : `1411179481850318928`
+- Transcripts tickets HTML : `1411192328231850034`
+- Logs kick : `1420474600172818595`
+- Logs ban/unban : `1420474736210608209`
+- Logs bantemp : `1420474764744589565`
+- Logs mutes/unmutes : `1420474857874919604`
+- Logs commandes : `1420474894092861490`
+- Logs sécurité : `1508839256226009160`
+
+## Installation Railway
+
+Variable obligatoire :
 
 ```env
 DISCORD_TOKEN=ton_token_bot
 ```
 
-Variables recommandées :
-
-```env
-TICKET_LOGS_ID=id_salon_logs_tickets
-MODERATION_LOGS_ID=id_salon_logs_moderation
-SECURITY_LOGS_ID=id_salon_logs_securite
-GIVEAWAY_CHANNEL_ID=id_salon_giveaway
-FONDATEUR_ROLE_NAME=Fondateur
-MINI_FONDATEUR_ROLE_NAME=Mini Fondateur
-GERANT_RECRUTEUR_ROLE_NAME=Gérant recruteur
-```
-
-Commande de start Railway :
+Commande de start :
 
 ```bash
 npm start
 ```
-
-Aucune commande slash `/` n'est nécessaire.
