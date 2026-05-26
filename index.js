@@ -34,7 +34,6 @@ const client = new Client({
 
 const DATA_FILE = path.join(__dirname, "staff-stats.json");
 const TEMP_BANS_FILE = path.join(__dirname, "temp-bans.json");
-const ASSETS_DIR = path.join(__dirname, "assets");
 const BRAND_IMAGE_PATH = path.join(ASSETS_DIR, config.branding?.imageFile || "zinzin.png");
 const spamMap = new Map();
 const joinRaidMap = new Map();
