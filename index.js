@@ -576,6 +576,12 @@ async function sendTicketPanel(channel) {
         description: "Aide, signalement ou demande staff",
         value: "probleme",
         emoji: "🛠️"
+      },
+      {
+        label: "No Loot",
+        description: "Demande de no loot",
+        value: "No Loot",
+        emoji: "❌"
       }
     );
 
