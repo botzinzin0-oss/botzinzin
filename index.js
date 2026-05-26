@@ -560,6 +560,10 @@ async function sendTicketPanel(channel) {
   if (files.length) {
     embed.setThumbnail(`attachment://${config.branding?.imageFile || "zinzin.png"}`);
   }
+  
+  if (files.length) {
+  embed.setImage(`attachment://${config.branding?.imageFile || "zinzin.png"}`);
+  }
 
   const menu = new StringSelectMenuBuilder()
     .setCustomId("ticket_menu")
