@@ -1169,7 +1169,7 @@ async function sendRulesPanel(channel) {
   const files = rulesFiles();
 
   const embed = new EmbedBuilder()
-    .setColor(0xff1f1f)
+    .setColor(0xff0a8a)
     .setTitle("📜 RÈGLEMENT OFFICIEL : ZinZin x RUSH PvP")
     .setDescription([
       "## RÈGLES GÉNÉRALES & COMPORTEMENT",
