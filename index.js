@@ -1297,25 +1297,32 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "giveaway") {
-    if (args[0] !== "op") {
-      return message.reply("Utilisation : `!giveaway op`");
-    }
-
-    if (!canCreateGiveaway(message.member)) {
-      return message.reply("❌ Permission refusée.");
-    }
-
-    const button = new ButtonBuilder()
-      .setCustomId(`open_giveaway_modal_${message.author.id}`)
-      .setLabel("Créer le giveaway")
-      .setEmoji("🎉")
-      .setStyle(ButtonStyle.Success);
-
-    return message.reply({
-      content: "🎉 Clique sur le bouton pour ouvrir le menu giveaway.",
-      components: [new ActionRowBuilder().addComponents(button)]
-    });
+  if (args[0] !== "op") {
+    return message.reply("Utilisation : `!giveaway op`");
   }
+
+  if (!canCreateGiveaway(message.member)) {
+    return message.reply("❌ Permission refusée.");
+  }
+
+  const giveawayId = Date.now().toString();
+
+  const button = new ButtonBuilder()
+    .setCustomId(`open_giveaway_modal_${message.author.id}_${giveawayId}`)
+    .setLabel("Créer le giveaway")
+    .setEmoji("🎉")
+    .setStyle(ButtonStyle.Success);
+
+  return message.reply({
+    content: [
+      "🎉 Clique sur le bouton pour ouvrir le menu giveaway.",
+      "",
+      `🆔 ID du giveaway : \`${giveawayId}\``,
+      `Pour l'annuler ensuite : \`!cancelgiveaway ${giveawayId}\``
+    ].join("\n"),
+    components: [new ActionRowBuilder().addComponents(button)]
+  });
+}
 
   if (command === "cancelgiveaway") {
     if (!canCreateGiveaway(message.member)) {
