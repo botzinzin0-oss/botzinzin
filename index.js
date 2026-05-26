@@ -1246,6 +1246,7 @@ client.on("messageCreate", async message => {
           "📖 Commandes Zinzin",
           [
             "`!panel` / `!setup` → envoie le panel ticket",
+            "`!reglement` → envoie le réglement",
             "`!close` → ferme le ticket",
             "`!clear 10` → supprime des messages",
             "`!add ID` → ajoute quelqu’un au ticket",
@@ -1264,7 +1265,17 @@ client.on("messageCreate", async message => {
         )
       ]
     });
+    
+  
+  if (command === "reglement" || command === "rules") {
+  if (!hasPermissionRole(message.member)) {
+    return message.reply("❌ Permission refusée.");
   }
+
+  await sendRulesPanel(message.channel);
+  return message.reply("✅ Règlement envoyé.");
+  }
+  
 
   if (command === "setup" || command === "panel") {
     if (!hasPermissionRole(message.member)) {
