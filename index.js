@@ -224,22 +224,45 @@ function getStaffRolesArray() {
     config.staffRoles.fondateur,
     config.staffRoles.miniFondateur,
     config.staffRoles.gerantRecruteur
-  ];
+  ].filter(Boolean);
 }
 
-function isStaff(member) {
+function getStaffRoleIdsArray() {
+  return Array.isArray(config.staffRoles?.ids)
+    ? config.staffRoles.ids.filter(Boolean)
+    : [];
+}
+
+function hasPermissionRole(member) {
   if (!member || !member.roles) return false;
+  if (member.permissions?.has(PermissionFlagsBits.Administrator)) return true;
+
+  const allowedNames = getStaffRolesArray();
+  const allowedIds = getStaffRoleIdsArray();
 
   return member.roles.cache.some(role =>
-    getStaffRolesArray().includes(role.name)
+    allowedIds.includes(role.id) || allowedNames.includes(role.name)
   );
 }
 
-function canCreateGiveaway(member) {
-  if (!member || !config.giveaway?.allowedRoles) return false;
+function isStaff(member) {
+  return hasPermissionRole(member);
+}
 
-  return config.giveaway.allowedRoles.some(roleName =>
-    member.roles.cache.some(role => role.name === roleName)
+function canCreateGiveaway(member) {
+  if (!member || !member.roles) return false;
+  if (hasPermissionRole(member)) return true;
+
+  const allowedNames = Array.isArray(config.giveaway?.allowedRoles)
+    ? config.giveaway.allowedRoles.filter(Boolean)
+    : [];
+
+  const allowedIds = Array.isArray(config.giveaway?.allowedRoleIds)
+    ? config.giveaway.allowedRoleIds.filter(Boolean)
+    : [];
+
+  return member.roles.cache.some(role =>
+    allowedIds.includes(role.id) || allowedNames.includes(role.name)
   );
 }
 
@@ -1172,7 +1195,7 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "setup" || command === "panel") {
-    if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
@@ -1237,7 +1260,7 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "clear") {
-    if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
@@ -1290,7 +1313,7 @@ client.on("messageCreate", async message => {
 
 
   if (command === "ban") {
-    if (!message.member.permissions.has(PermissionFlagsBits.BanMembers)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
@@ -1308,7 +1331,7 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "unban") {
-    if (!message.member.permissions.has(PermissionFlagsBits.BanMembers)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
@@ -1324,7 +1347,7 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "kick") {
-    if (!message.member.permissions.has(PermissionFlagsBits.KickMembers)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
@@ -1342,7 +1365,7 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "mute" || command === "timeout") {
-    if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
@@ -1365,7 +1388,7 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "unmute") {
-    if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
@@ -1379,7 +1402,7 @@ client.on("messageCreate", async message => {
   }
 
   if (command === "bantemp" || command === "tempban") {
-    if (!message.member.permissions.has(PermissionFlagsBits.BanMembers)) {
+    if (!hasPermissionRole(message.member)) {
       return message.reply("❌ Permission refusée.");
     }
 
