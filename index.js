@@ -1189,7 +1189,7 @@ async function sendRulesPanel(channel) {
       "**Règle absolue :** Tirs et actions uniquement **À L'INTÉRIEUR** des zones. Jouer les bords ou tirer depuis/vers l'extérieur = **BAN**.",
       "",
       "🟥 **Zone Rouge :** Toutes les armes autorisées | Loot autorisé | Déplacement de corps interdit | Aucun PRESS en fin de zone.",
-      "🟦 **Zone Bleue :** Calibre .50 uniquement | Loot autorisé | Aucun PRESS en fin de zone.",
+      "🟦 **Zone Bleue :** Cal.50, Wm29, P.lourd, Mk2, Double actions uniquement | Loot autorisé | Aucun PRESS en fin de zone.",
       "⬜ **Zone Blanche :** Toutes les armes autorisées | **LOOT INTERDIT** | Aucun PRESS pendant et après la zone.",
       "",
       "## LOOT & RÉANIMATION",
@@ -1210,7 +1210,6 @@ async function sendRulesPanel(channel) {
       "**Triche (BAN PERMANENT) :** Cheat, aim assist / manette, macros, scripts, tir à travers les murs ou véhicules blindés, sous-map et bug revive.",
       "**Sanctions appliquées :** Warn ➡️ Kick ➡️ Blacklist ➡️ Ban Temporaire ➡️ Ban Permanent. Les admins/modérateurs ont le dernier mot."
     ].join("\n"))
-    .setFooter})
     .setTimestamp();
 
   if (files.length) {
