@@ -4,12 +4,21 @@ module.exports = {
 
   channels: {
     ticketPanel: "🆘｜𝙏𝙞𝙘𝙠𝙚𝙩s",
+    ticketPanelId: process.env.TICKET_PANEL_ID || "1411179481850318928",
+
     ticketLogs: "✅｜𝙏𝙞𝙘𝙠𝙚𝙩-𝙡𝙤𝙜𝙨",
-    ticketLogsId: process.env.TICKET_LOGS_ID || process.env.TRANSCRIPT_CHANNEL_ID || "",
+    ticketLogsId: process.env.TICKET_LOGS_ID || process.env.TRANSCRIPT_CHANNEL_ID || "1411192328231850034",
+
+    kickLogsId: process.env.KICK_LOGS_ID || "1420474600172818595",
+    banLogsId: process.env.BAN_LOGS_ID || "1420474736210608209",
+    tempbanLogsId: process.env.TEMPBAN_LOGS_ID || "1420474764744589565",
+    muteLogsId: process.env.MUTE_LOGS_ID || "1420474857874919604",
+    commandLogsId: process.env.COMMAND_LOGS_ID || "1420474894092861490",
+    securityLogsId: process.env.SECURITY_LOGS_ID || "1508839256226009160",
+
     moderationLogs: "🛡️｜mod-logs",
     moderationLogsId: process.env.MODERATION_LOGS_ID || "",
-    securityLogs: "🚨｜security-logs",
-    securityLogsId: process.env.SECURITY_LOGS_ID || ""
+    securityLogs: "🚨｜security-logs"
   },
 
   staffRoles: {
