@@ -1,0 +1,13 @@
+{
+  "name": "zinzin-bot-ready",
+  "version": "2.1.0",
+  "description": "Bot Discord Zinzin opérationnel - commandes !, tickets, sécurité, modération, giveaways et logs.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5"
+  }
+}
