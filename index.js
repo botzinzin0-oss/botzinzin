@@ -532,7 +532,7 @@ async function sendTicketPanel(channel) {
   const files = brandFiles();
   const embed = new EmbedBuilder()
     .setColor(config.branding?.color || 0xff0a8a)
-    .setTitle("🎫・Centre d’assistance Zinzin")
+    .setTitle("👽・Centre d’assistance Zinzin")
     .setDescription([
       "Bienvenue sur le panel de tickets.",
       "Choisis la catégorie qui correspond à ta demande dans le menu ci-dessous.",
@@ -545,6 +545,8 @@ async function sendTicketPanel(channel) {
       "🛠️ **Problème**",
       "Tu as besoin d’aide, tu veux signaler un souci ou contacter le staff.",
       "",
+      "❌ **No Loot**",
+      "Tu veux avoir un no loot avec nous ouvre ton ticket dans cet catégorie.",
       "━━━━━━━━━━━━━━━━━━━━",
       "",
       "⚠️ Ouvre un ticket uniquement si ta demande est sérieuse."
@@ -578,7 +580,7 @@ async function sendTicketPanel(channel) {
     );
 
   await channel.send({
-    content: "## 🎫 Support Zinzin\n> Ouvre un ticket avec le menu ci-dessous.",
+    content: "## 👽 Support Zinzin\n> Ouvre un ticket avec le menu ci-dessous.",
     embeds: [embed],
     files,
     components: [
