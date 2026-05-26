@@ -98,23 +98,6 @@ function isInviteLink(content = "") {
   return /(discord\.gg|discord\.com\/invite|discordapp\.com\/invite)\//i.test(content);
 }
 
-function getModerationLogChannel(guild) {
-  return guild.channels.cache.get(config.channels?.moderationLogsId || "")
-    || getChannelByName(guild, config.channels?.moderationLogs || "");
-}
-
-function getSecurityLogChannel(guild) {
-  return guild.channels.cache.get(config.channels?.securityLogsId || "")
-    || getChannelByName(guild, config.channels?.securityLogs || "")
-    || getModerationLogChannel(guild);
-}
-
-async function sendModerationLog(guild, title, description) {
-  const channel = getModerationLogChannel(guild);
-  if (!channel) return;
-  await channel.send({ embeds: [makeEmbed(title, description)], files: brandFiles() }).catch(() => {});
-}
-
 async function sendSecurityLog(guild, title, description) {
   const channel = getSecurityLogChannel(guild);
   if (!channel) return;
@@ -213,7 +196,7 @@ function scheduleTempBan(client, entry) {
     await guild.members.unban(entry.userId, "Fin du tempban").catch(() => {});
     const entries = loadTempBans().filter(e => !(e.guildId === entry.guildId && e.userId === entry.userId));
     saveTempBans(entries);
-    await sendModerationLog(guild, "✅ Tempban terminé", `Utilisateur : <@${entry.userId}> (${entry.userId})`);
+    await sendModerationLog(guild, "tempban", "✅ Tempban terminé", `Utilisateur : <@${entry.userId}> (${entry.userId})`);
   }, Math.min(delay, 2_147_483_647));
 }
 
@@ -267,6 +250,54 @@ function getChannelByName(guild, name) {
 function getLogChannel(guild) {
   return guild.channels.cache.get(config.channels.ticketLogsId)
     || getChannelByName(guild, config.channels.ticketLogs);
+}
+
+function getConfiguredChannel(guild, id) {
+  return id ? guild.channels.cache.get(id) : null;
+}
+
+function getModerationLogChannel(guild, type = "moderation") {
+  const ids = {
+    kick: config.channels?.kickLogsId,
+    ban: config.channels?.banLogsId,
+    unban: config.channels?.banLogsId,
+    tempban: config.channels?.tempbanLogsId,
+    mute: config.channels?.muteLogsId,
+    unmute: config.channels?.muteLogsId,
+    command: config.channels?.commandLogsId
+  };
+
+  return getConfiguredChannel(guild, ids[type])
+    || getConfiguredChannel(guild, config.channels?.moderationLogsId)
+    || getChannelByName(guild, config.channels?.moderationLogs || "");
+}
+
+function getSecurityLogChannel(guild) {
+  return getConfiguredChannel(guild, config.channels?.securityLogsId)
+    || getChannelByName(guild, config.channels?.securityLogs || "")
+    || getModerationLogChannel(guild);
+}
+
+async function sendModerationLog(guild, type, title, description) {
+  const channel = getModerationLogChannel(guild, type);
+  if (!channel) return;
+  await channel.send({ embeds: [makeEmbed(title, description)], files: brandFiles() }).catch(() => {});
+}
+
+async function sendCommandLog(message, command, args) {
+  const channel = getModerationLogChannel(message.guild, "command");
+  if (!channel) return;
+  await channel.send({
+    embeds: [makeEmbed(
+      "⌨️ Commande utilisée",
+      [
+        `Utilisateur : ${message.author} (${message.author.id})`,
+        `Salon : ${message.channel}`,
+        `Commande : \`${config.prefix || "!"}${command}${args.length ? " " + args.join(" ") : ""}\``
+      ].join("\n")
+    )],
+    files: brandFiles()
+  }).catch(() => {});
 }
 
 function makeEmbed(title, description) {
@@ -1073,6 +1104,9 @@ client.on("messageCreate", async message => {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift()?.toLowerCase();
+  if (!command) return;
+
+  sendCommandLog(message, command, args).catch(() => {});
 
   if (command === "help" || command === "aide") {
     return message.reply({
@@ -1107,7 +1141,9 @@ client.on("messageCreate", async message => {
     }
 
     const panelChannel =
-      getChannelByName(message.guild, config.channels.ticketPanel) || message.channel;
+      message.guild.channels.cache.get(config.channels.ticketPanelId)
+      || getChannelByName(message.guild, config.channels.ticketPanel)
+      || message.channel;
 
     await sendTicketPanel(panelChannel);
     return message.reply("✅ Panel envoyé.");
@@ -1231,7 +1267,7 @@ client.on("messageCreate", async message => {
     }
 
     await target.ban({ reason });
-    await sendModerationLog(message.guild, "🔨 Ban", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nRaison : ${reason}`);
+    await sendModerationLog(message.guild, "ban", "🔨 Ban", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nRaison : ${reason}`);
     return message.reply(`✅ ${target.user.tag} a été banni.`);
   }
 
@@ -1247,7 +1283,7 @@ client.on("messageCreate", async message => {
     await message.guild.members.unban(userId, reason).catch(() => null);
     const entries = loadTempBans().filter(e => !(e.guildId === message.guild.id && e.userId === userId));
     saveTempBans(entries);
-    await sendModerationLog(message.guild, "✅ Unban", `Modérateur : ${message.author}\nUtilisateur ID : ${userId}\nRaison : ${reason}`);
+    await sendModerationLog(message.guild, "unban", "✅ Unban", `Modérateur : ${message.author}\nUtilisateur ID : ${userId}\nRaison : ${reason}`);
     return message.reply(`✅ L’utilisateur \`${userId}\` a été débanni si son ban existait.`);
   }
 
@@ -1265,7 +1301,7 @@ client.on("messageCreate", async message => {
     }
 
     await target.kick(reason);
-    await sendModerationLog(message.guild, "👢 Kick", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nRaison : ${reason}`);
+    await sendModerationLog(message.guild, "kick", "👢 Kick", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nRaison : ${reason}`);
     return message.reply(`✅ ${target.user.tag} a été expulsé.`);
   }
 
@@ -1288,7 +1324,7 @@ client.on("messageCreate", async message => {
     }
 
     await target.timeout(durationMs, reason);
-    await sendModerationLog(message.guild, "🔇 Mute", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nDurée : ${durationInput}\nRaison : ${reason}`);
+    await sendModerationLog(message.guild, "mute", "🔇 Mute", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nDurée : ${durationInput}\nRaison : ${reason}`);
     return message.reply(`✅ ${target.user.tag} a été mute pendant ${durationInput}.`);
   }
 
@@ -1302,7 +1338,7 @@ client.on("messageCreate", async message => {
     if (!target) return message.reply("Utilisation : `!unmute @membre raison`");
 
     await target.timeout(null, reason);
-    await sendModerationLog(message.guild, "🔊 Unmute", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nRaison : ${reason}`);
+    await sendModerationLog(message.guild, "unmute", "🔊 Unmute", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nRaison : ${reason}`);
     return message.reply(`✅ ${target.user.tag} n’est plus mute.`);
   }
 
@@ -1334,7 +1370,7 @@ client.on("messageCreate", async message => {
 
     await target.ban({ reason: `Tempban ${durationInput} - ${reason}` });
     scheduleTempBan(client, entry);
-    await sendModerationLog(message.guild, "⏳ Tempban", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nDurée : ${durationInput}\nFin : <t:${Math.floor(entry.unbanAt / 1000)}:R>\nRaison : ${reason}`);
+    await sendModerationLog(message.guild, "tempban", "⏳ Tempban", `Modérateur : ${message.author}\nUtilisateur : ${target.user.tag} (${target.id})\nDurée : ${durationInput}\nFin : <t:${Math.floor(entry.unbanAt / 1000)}:R>\nRaison : ${reason}`);
     return message.reply(`✅ ${target.user.tag} a été banni temporairement pendant ${durationInput}.`);
   }
 
