@@ -24,7 +24,12 @@ module.exports = {
   staffRoles: {
     fondateur: process.env.FONDATEUR_ROLE_NAME || "Fondateur",
     miniFondateur: process.env.MINI_FONDATEUR_ROLE_NAME || "Mini Fondateur",
-    gerantRecruteur: process.env.GERANT_RECRUTEUR_ROLE_NAME || "Gérant recruteur"
+    gerantRecruteur: process.env.GERANT_RECRUTEUR_ROLE_NAME || "Gérant recruteur",
+    ids: [
+      "1411180786819928064",
+      "1443329749849210910",
+      "1421076564921024612"
+    ]
   },
 
   recruitmentMessage: "Auras-tu le niveau pour nous rejoindre ?",
@@ -62,6 +67,11 @@ module.exports = {
     allowedRoles: [
       process.env.FONDATEUR_ROLE_NAME || "Fondateur",
       process.env.MINI_FONDATEUR_ROLE_NAME || "Mini Fondateur"
+    ],
+    allowedRoleIds: [
+      "1411180786819928064",
+      "1443329749849210910",
+      "1421076564921024612"
     ],
 
     pingRole: process.env.GIVEAWAY_PING_ROLE_NAME || "TEAMZINZIN"
