@@ -409,8 +409,8 @@ async function createHtmlTranscript(channel) {
 
   const bg =
     config.branding?.imageUrl
-      ? `linear-gradient(rgba(5,10,20,.88), rgba(5,10,20,.88)), url("${escapeHtml(config.branding.imageUrl)}") center/cover fixed`
-      : "#0b1220";
+      ? `linear-gradient(135deg, rgba(32,7,26,.88), rgba(69,14,52,.84)), url("${escapeHtml(config.branding.imageUrl)}") center/cover fixed`
+      : "linear-gradient(135deg, #120611 0%, #1d0818 35%, #2c0d24 65%, #3a102e 100%)";
 
   const html = `
 <!doctype html>
@@ -427,39 +427,52 @@ Transcript ${escapeHtml(channel.name)}
 
 body{
 background:${bg};
-color:#e6f7ff;
+color:#ffeaf5;
 font-family:Arial,sans-serif;
 padding:30px
 }
 
 h1{
-color:#00aaff
+color:#ff5fa2;
+margin-bottom:10px
+}
+
+p{
+color:#f7c6dc;
+line-height:1.5
 }
 
 .msg{
 display:flex;
 gap:12px;
-background:#111b2e;
-border:1px solid #17395c;
-border-radius:12px;
-padding:12px;
-margin:10px 0
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,95,162,0.35);
+border-radius:14px;
+padding:14px;
+margin:12px 0;
+box-shadow:0 8px 24px rgba(0,0,0,0.18)
 }
 
 .avatar{
 width:42px;
 height:42px;
-border-radius:50%
+border-radius:50%;
+border:2px solid rgba(255,95,162,0.35)
+}
+
+b{
+color:#fff4fa
 }
 
 span{
-color:#8bbbd8;
+color:#f4aac9;
 font-size:12px
 }
 
 .content{
 margin-top:6px;
-line-height:1.4
+line-height:1.5;
+color:#ffe3ef
 }
 
 </style>
@@ -493,35 +506,58 @@ ${rows}
 
 async function sendTicketPanel(channel) {
 
-  const embed = makeEmbed(
-    "🧊 Panel Tickets — Zinzin",
-    [
-      "Sélectionne une catégorie dans le menu ci-dessous.",
+  const files = brandFiles();
+  const embed = new EmbedBuilder()
+    .setColor(config.branding?.color || 0xff0a8a)
+    .setTitle("💗・Centre d’assistance Zinzin")
+    .setDescription([
+      "Bienvenue sur le panel de tickets.",
+      "Choisis la catégorie qui correspond à ta demande dans le menu ci-dessous.",
       "",
-      "📋 Recrutement",
-      "🛠️ Problème"
-    ].join("\n")
-  );
+      "━━━━━━━━━━━━━━━━━━━━",
+      "",
+      "📋 **Recrutement**",
+      "Tu veux rejoindre l’équipe ou passer une candidature.",
+      "",
+      "🛠️ **Problème**",
+      "Tu as besoin d’aide, tu veux signaler un souci ou contacter le staff.",
+      "",
+      "━━━━━━━━━━━━━━━━━━━━",
+      "",
+      "⚠️ Ouvre un ticket uniquement si ta demande est sérieuse."
+    ].join("\n"))
+    .setFooter({
+      text: `${config.serverName} • Support privé`,
+      iconURL: channel.guild.iconURL?.() || undefined
+    })
+    .setTimestamp();
+
+  if (files.length) {
+    embed.setThumbnail(`attachment://${config.branding?.imageFile || "zinzin.png"}`);
+  }
 
   const menu = new StringSelectMenuBuilder()
     .setCustomId("ticket_menu")
-    .setPlaceholder("Choisis une catégorie")
+    .setPlaceholder("💗 Sélectionne une catégorie de ticket")
     .addOptions(
       {
         label: "Recrutement",
+        description: "Candidature / rejoindre l’équipe",
         value: "recrutement",
         emoji: "📋"
       },
       {
         label: "Problème",
+        description: "Aide, signalement ou demande staff",
         value: "probleme",
         emoji: "🛠️"
       }
     );
 
   await channel.send({
+    content: "## 💗 Support Zinzin\n> Ouvre un ticket avec le menu ci-dessous.",
     embeds: [embed],
-    files: brandFiles(),
+    files,
     components: [
       new ActionRowBuilder().addComponents(menu)
     ]
